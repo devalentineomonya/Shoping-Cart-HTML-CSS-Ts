@@ -24,8 +24,8 @@ jobs:
 
       - name: Verify lock file
         run: |
-          if [ ! -f package-lock.yaml ]; then
-            echo "::error::package-lock.yaml not found! Commit your lock file first."
+          if [ ! -f pnpm-lock.yaml ]; then
+            echo "::error::pnpm-lock.yaml not found! Commit your lock file first."
             exit 1
           fi
 
@@ -34,10 +34,13 @@ jobs:
         with:
           node-version: '20'
           cache: 'pnpm'
-          cache-dependency-path: 'package-lock.yaml'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm ci --audit=false
+        run: pnpm install --frozen-lockfile
         env:
           CI: true
 
