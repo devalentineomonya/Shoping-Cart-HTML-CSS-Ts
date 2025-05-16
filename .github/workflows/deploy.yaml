@@ -83,17 +83,23 @@ jobs:
             echo "::warning::No build script found in package.json. Using default Vite build command."
           fi
 
+      - name: Extract repository name
+        id: repo-name
+        run: echo "REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)" >> $GITHUB_ENV
+
       - name: Build production with package.json script
         if: steps.check-build-script.outputs.build_script_exists == 'true'
         run: pnpm run build
         env:
           VITE_APP_VERSION: ${{ github.sha }}
+          REPO_NAME: ${{ env.REPO_NAME }}
 
       - name: Build production with direct Vite command
         if: steps.check-build-script.outputs.build_script_exists == 'false'
         run: pnpm exec vite build
         env:
           VITE_APP_VERSION: ${{ github.sha }}
+          REPO_NAME: ${{ env.REPO_NAME }}
 
       - name: Check if dist directory exists
         id: check-dist
