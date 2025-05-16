@@ -22,25 +22,33 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Verify lock file
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "::error::package-lock.json not found! Commit your lock file first."
+            exit 1
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci --audit=false
         env:
           CI: true
 
       - name: Lint code
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run tests
-        run: npm test
+        run: pnpm test
 
       - name: Build production
-        run: npm run build
+        run: pnpm run build
         env:
           VITE_APP_VERSION: ${{ github.sha }}
 
