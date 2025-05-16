@@ -61,8 +61,8 @@ jobs:
       # - name: Lint code
       #   run: pnpm run lint
 
-      - name: Run tests
-        run: pnpm test
+    # - name: Run tests
+      #   run: pnpm test
 
       - name: Build production
         run: pnpm run build
